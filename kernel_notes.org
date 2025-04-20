@@ -1,0 +1,63 @@
+cr3 - controls the page table that translates virt addresses to
+phisical ones. Holds the address of PML4.
+
+macros in the kernel: phys_to_virt(), virt_to_phys()
+
+MSR_LSTAR - where syscall jumps to
+
+RFLAGS - with stac and clac
+
+
+https://www.kernel.org/doc/Documentation/security/self-protection.txt
+
+
+/proc/slabinfo
+/proc/kallsyms
+
+dmesg
+lsmod, insmod, rmmod
+
+int3 and int1 can be hooked with a module?
+
+interacting with modules through: read/write, ioctl,
+
+
+heap spraying
+msg_msg, pipe_buffer
+man mq_overview
+
+https://github.com/martinradev/gdb-pt-dump
+https://github.com/nccgroup/libslub
+https://www.kernel.org/doc/Documentation/dev-tools/gdb-kernel-debugging.rst
+https://web.archive.org/web/20230923063123/https://www.nullbyte.cat/post/linux-kernel-exploit-development-environment/#environment-setup
+
+
+struct task_struct has struct cred
+
+run_cmd() - yolo a command in userspace
+
+gs register is current_task_struct
+
+
+** seccomp
+task_struct has thread_info with bits
+#+BEGIN_SRC c
+  struct thread_info {
+      unsigned long		flags;		/* low level flags */
+      unsigned long		syscall_work;	/* SYSCALL_WORK_ flags */
+      u32			status;		/* thread synchronous flags */
+  #ifdef CONFIG_SMP
+      u32			cpu;		/* current CPU */
+  #endif
+  };
+
+
+  #define SYSCALL_WORK_SECCOMP		BIT(SYSCALL_WORK_BIT_SECCOMP)
+
+  // in x86 no TIF_SECCOMP anymore?
+  #define TIF_SECCOMP        8
+#+END_SRC
+
+
+
+
