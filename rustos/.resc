@@ -1,0 +1,4 @@
+using sysbus
+
+mach create "x86"
+machine LoadPlatformDescription @platforms/cpus/x86-64.repl

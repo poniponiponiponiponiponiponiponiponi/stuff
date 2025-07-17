@@ -1,0 +1,9 @@
+using sysbus
+
+mach create "x86"
+machine LoadPlatformDescription @platforms/cpus/x86-64.repl
+
+sysbus LoadBinary @./target/x86_64-blog_os/debug/bootimage-rustos.bin 0x100000
+cpu0 SetPC 0x100000
+
+start
